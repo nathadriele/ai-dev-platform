@@ -136,7 +136,6 @@ curl -X POST http://localhost:8000/api/v1/mcp/servers \
 The MCP server can be implemented as a separate service. Here's a basic implementation:
 
 ```python
-# mcp_server.py
 from mcp import Server, types
 from pathlib import Path
 import os
@@ -194,7 +193,6 @@ from app.services.mcp_service import MCPService
 
 mcp_service = MCPService()
 
-# Analyze backend structure
 result = await mcp_service.execute_tool(
     server_id="filesystem-local",
     tool_name="filesystem.analyze_code",
@@ -211,7 +209,6 @@ print(f"Found {len(result['classes'])} classes")
 ### Example 2: Search for Usage Pattern
 
 ```python
-# Find all files using SQLAlchemy
 result = await mcp_service.execute_tool(
     server_id="filesystem-local",
     tool_name="filesystem.search_files",
