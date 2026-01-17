@@ -4,7 +4,6 @@ from alembic import context
 import sys
 from pathlib import Path
 
-# Add parent directory to path to import app modules
 sys.path.append(str(Path(__file__).parent.parent))
 
 from app.core.config import settings
@@ -14,17 +13,13 @@ from app.models import (
     PipelineExecution, MCPServer
 )
 
-# this is the Alembic Config object
 config = context.config
 
-# Set the database URL from settings
 config.set_main_option("sqlalchemy.url", settings.database_url)
 
-# Interpret the config file for Python logging.
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# Add your model's MetaData object here
 target_metadata = Base.metadata
 
 
