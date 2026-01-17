@@ -252,7 +252,6 @@ async def get_stats(params: Dict) -> Dict:
     """Get statistics about a directory."""
     path = params.get("path", ".")
 
-    # Validate path
     if not validate_path(path):
         raise ValueError(f"Access denied: {path}")
 
@@ -266,7 +265,6 @@ async def get_stats(params: Dict) -> Dict:
 
     try:
         for root, dirs, files in os.walk(path):
-            # Skip common exclusions
             dirs[:] = [d for d in dirs if d not in [
                 "__pycache__", "node_modules", ".git", "venv", "dist"
             ]]
