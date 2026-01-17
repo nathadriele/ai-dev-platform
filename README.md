@@ -1,6 +1,6 @@
 # AI-Assisted Developer Productivity Platform
 
-![alt text](/ai-dev-platform/imgs/image.png)
+![alt text](/imgs/image.png)
 
 A full-stack platform for tracking, managing, and demonstrating the effective use of AI tools and code agents in software development workflows.
 
