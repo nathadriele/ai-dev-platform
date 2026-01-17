@@ -139,13 +139,11 @@ async def search_files(params: Dict) -> Dict:
         for root, dirs, files in os.walk(path):
             dirs[:] = [d for d in dirs if d not in exclude_dirs]
 
-            # Match files by pattern
             for filename in files:
                 if re.match(pattern.replace("*", ".*"), filename):
                     file_path = os.path.join(root, filename)
 
                     if search_content:
-                        # Search within file
                         try:
                             with open(file_path, 'r', encoding='utf-8') as f:
                                 for line_num, line in enumerate(f, 1):
@@ -174,11 +172,9 @@ async def analyze_code(params: Dict) -> Dict:
     path = params.get("path", ".")
     language = params.get("language", "python")
 
-    # Validate path
     if not validate_path(path):
         raise ValueError(f"Access denied: {path}")
 
-    # Language-specific patterns
     patterns = {
         "python": {
             "classes": r"^class\s+(\w+)",
@@ -199,7 +195,6 @@ async def analyze_code(params: Dict) -> Dict:
     functions = []
     imports = set()
 
-    # Find all relevant files
     extensions = {
         "python": ".py",
         "typescript": ".ts,.tsx"
@@ -209,7 +204,6 @@ async def analyze_code(params: Dict) -> Dict:
 
     try:
         for root, dirs, files in os.walk(path):
-            # Skip common exclusions
             dirs[:] = [d for d in dirs if d not in [
                 "__pycache__", "node_modules", ".git", "venv", "dist"
             ]]
@@ -286,7 +280,6 @@ async def get_stats(params: Dict) -> Dict:
                     size = os.path.getsize(file_path)
                     total_size += size
 
-                    # Count file types
                     ext = os.path.splitext(filename)[1].lower()
                     file_types[ext] = file_types.get(ext, 0) + 1
 
@@ -308,7 +301,6 @@ if __name__ == "__main__":
     print(f"Allowed paths: {ALLOWED_BASE_PATHS}")
     print(f"Max file size: {MAX_FILE_SIZE} bytes")
 
-    # Run server
     uvicorn.run(
         server,
         host="0.0.0.0",
