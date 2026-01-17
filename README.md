@@ -680,5 +680,3 @@ This project itself serves as a demonstration of AI-assisted development. Key ex
 For a detailed breakdown of how AI was used in building this platform, see [docs/AI_DOCUMENTATION.md](docs/AI_DOCUMENTATION.md).
 
 ---
-
-**Built with passion and AI assistance to demonstrate the future of software development.**
