@@ -29,39 +29,31 @@ Before deploying, ensure you have:
 ### Backend Environment Variables
 
 ```bash
-# Application
 APP_NAME="AI-Assisted Developer Productivity Platform"
 APP_VERSION="1.0.0"
 DEBUG=false
 ENVIRONMENT="production"
 
-# Database (PostgreSQL for production)
 DATABASE_URL="postgresql+asyncpg://user:password@host:5432/dbname"
 
-# Security
 SECRET_KEY="your-production-secret-key-min-32-characters-long"
 ALGORITHM="HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES=15
 REFRESH_TOKEN_EXPIRE_DAYS=7
 
-# CORS
 CORS_ORIGINS=["https://your-domain.com"]
 
-# External Services (optional)
 OPENAI_API_KEY="sk-..."
 ANTHROPIC_API_KEY="sk-ant-..."
 GITHUB_TOKEN="ghp_..."
 
-# MCP Integration (optional)
 MCP_GITHUB_ENDPOINT="https://..."
 MCP_FILESYSTEM_ENDPOINT="https://..."
 MCP_DATABASE_ENDPOINT="https://..."
 
-# Logging
 LOG_LEVEL="INFO"
 LOG_FORMAT="json"
 
-# Rate Limiting
 RATE_LIMIT_PER_MINUTE=100
 ```
 
