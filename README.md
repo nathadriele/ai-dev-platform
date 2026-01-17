@@ -16,22 +16,7 @@ This platform provides a centralized hub for:
 
 ## Architecture
 
-```
-┌──────────────────────────────────────────────────────────────┐
-│                      Frontend (React + TypeScript)            │
-│                   Material UI + Redux Toolkit                 │
-└────────────────────────┬─────────────────────────────────────┘
-                         │ HTTP/REST API
-┌────────────────────────▼─────────────────────────────────────┐
-│                    Backend (FastAPI)                          │
-│              OpenAPI-first, Async Python                      │
-└────────────────────────┬─────────────────────────────────────┘
-                         │
-┌────────────────────────▼─────────────────────────────────────┐
-│              Database (SQLite / PostgreSQL)                   │
-│                 SQLAlchemy ORM                                │
-└──────────────────────────────────────────────────────────────┘
-```
+<img width="327" height="375" alt="image" src="https://github.com/user-attachments/assets/f1dcf6f8-eb4e-4470-8d2c-89bffe393756" />
 
 ## Tech Stack
 
