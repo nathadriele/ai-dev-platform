@@ -28,7 +28,7 @@ async def seed_users(db: AsyncSession):
         User(
             email="nathadriele@example.com",
             username="nathadriele",
-            full_name="Natha Driele",
+            full_name="nath adriele",
             hashed_password=get_password_hash("User123!"),
         ),
     ]
@@ -42,7 +42,6 @@ async def seed_users(db: AsyncSession):
 
 async def seed_projects(db: AsyncSession):
     """Seed sample projects."""
-    # Get admin user
     from sqlalchemy import select
     result = await db.execute(select(User).where(User.username == "admin"))
     admin = result.scalar_one()
@@ -78,7 +77,6 @@ async def seed_ai_activities(db: AsyncSession):
     from sqlalchemy import select
     import uuid
 
-    # Get user and project
     result_user = await db.execute(select(User).where(User.username == "admin"))
     user = result_user.scalar_one()
 
