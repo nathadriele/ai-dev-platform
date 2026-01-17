@@ -130,7 +130,6 @@ async def search_files(params: Dict) -> Dict:
     search_content = params.get("search_content", None)
     exclude_dirs = params.get("exclude_dirs", [])
 
-    # Validate path
     if not validate_path(path):
         raise ValueError(f"Access denied: {path}")
 
@@ -138,7 +137,6 @@ async def search_files(params: Dict) -> Dict:
 
     try:
         for root, dirs, files in os.walk(path):
-            # Filter excluded directories
             dirs[:] = [d for d in dirs if d not in exclude_dirs]
 
             # Match files by pattern
