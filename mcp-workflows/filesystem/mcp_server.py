@@ -10,15 +10,13 @@ import re
 from pathlib import Path
 from mcp import Server, types
 
-# Create MCP server
 server = Server("filesystem-mcp-server", version="1.0.0")
 
-# Configuration
 ALLOWED_BASE_PATHS = [
     "/home/nathadriele/Imagens/ai-dev",
     "/tmp/ai-dev-workspace"
 ]
-MAX_FILE_SIZE = 1024 * 1024  # 1MB
+MAX_FILE_SIZE = 1024 * 1024 
 
 
 def validate_path(path: str) -> bool:
