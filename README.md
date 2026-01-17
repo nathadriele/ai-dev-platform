@@ -185,6 +185,187 @@ This platform provides a centralized hub for:
 
 2. **Install dependencies**:
    ```bash
+   npm install## Overview
+
+This platform provides a centralized hub for:
+- **Project Management**: Track software development projects
+- **AI Activity Logging**: Document all AI tool interactions (prompts, responses, decisions)
+- **Code Agent Orchestration**: Execute and monitor AI-powered code agents
+- **CI/CD Integration**: Monitor pipelines and deployment history
+- **Analytics & Reporting**: Gain insights into AI-assisted development productivity
+- **MCP Integration**: Leverage Model-Context Protocol for enhanced tool capabilities
+
+## Architecture
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│                      Frontend (React + TypeScript)            │
+│                   Material UI + Redux Toolkit                 │
+└────────────────────────┬─────────────────────────────────────┘
+                         │ HTTP/REST API
+┌────────────────────────▼─────────────────────────────────────┐
+│                    Backend (FastAPI)                          │
+│              OpenAPI-first, Async Python                      │
+└────────────────────────┬─────────────────────────────────────┘
+                         │
+┌────────────────────────▼─────────────────────────────────────┐
+│              Database (SQLite / PostgreSQL)                   │
+│                 SQLAlchemy ORM                                │
+└──────────────────────────────────────────────────────────────┘
+```
+
+## Tech Stack
+
+### Frontend
+- **React 18** with TypeScript
+- **Material UI (MUI)** for components
+- **Redux Toolkit** for state management
+- **React Router v6** for routing
+- **Vite** for build tooling
+- **Axios** for HTTP requests
+- **Recharts** for data visualization
+
+### Backend
+- **FastAPI** for REST API
+- **SQLAlchemy 2.0** with async support
+- **Pydantic v2** for data validation
+- **PostgreSQL** (production) / **SQLite** (development)
+- **Alembic** for database migrations
+- **PyJWT** for authentication
+- **Uvicorn** as ASGI server
+
+### DevOps & Infrastructure
+- **Docker** for containerization
+- **docker-compose** for multi-container orchestration
+- **GitHub Actions** for CI/CD
+- **nginx** as reverse proxy (production)
+
+### AI & Automation
+- **OpenAI API** (GPT-4)
+- **Anthropic API** (Claude)
+- **Model-Context Protocol (MCP)**
+- **n8n** for workflow automation
+
+## Features
+
+### 1. Project Management
+- Create and manage software projects
+- Track repository URLs and tech stacks
+- Monitor project status and activity
+- Archive completed projects
+
+### 2. AI Activity Tracking
+- Log interactions with AI tools (ChatGPT, Claude, Copilot, Cursor)
+- Record prompts, responses, and code changes
+- Categorize activities (feature, bugfix, refactor, docs, test)
+- Track cost and time savings
+
+### 3. Code Agent Orchestration
+- Execute specialized code agents:
+  - **Code Scaffolder**: Generate boilerplate and project structure
+  - **Code Reviewer**: Review for bugs, security, and best practices
+  - **Test Generator**: Create comprehensive test suites
+  - **Documentation Generator**: Generate technical documentation
+- Monitor agent execution status
+- View agent outputs and results
+
+### 4. CI/CD Pipeline Monitoring
+- Track pipeline executions
+- Monitor build and test results
+- View deployment history
+- Analyze success/failure rates
+
+### 5. Analytics Dashboard
+- AI tool usage statistics
+- Productivity metrics
+- Cost analysis
+- Activity visualizations
+
+### 6. MCP Integration
+- Connect to GitHub MCP for repository operations
+- Use Filesystem MCP for project analysis
+- Database MCP for analytics
+- HTTP API MCP for external integrations
+
+## Quick Start
+
+### Prerequisites
+
+- **Docker** and **docker-compose** (for containerized setup)
+- **Python 3.11+** (for local development)
+- **Node.js 20+** and **npm** (for frontend development)
+- **PostgreSQL 15+** (for production, optional for development)
+
+### Option 1: Docker (Recommended)
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/yourusername/ai-dev-platform.git
+   cd ai-dev-platform
+   ```
+
+2. **Configure environment variables**:
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration
+   ```
+
+3. **Start all services**:
+   ```bash
+   docker-compose up -d
+   ```
+
+4. **Access the application**:
+   - Frontend: http://localhost:80
+   - Backend API: http://localhost:8000
+   - API Documentation: http://localhost:8000/docs
+   - n8n (automation): http://localhost:5678
+
+### Option 2: Local Development
+
+#### Backend Setup
+
+1. **Navigate to backend directory**:
+   ```bash
+   cd backend
+   ```
+
+2. **Create virtual environment**:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. **Install dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Configure environment**:
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration
+   ```
+
+5. **Run database migrations** (if using PostgreSQL):
+   ```bash
+   alembic upgrade head
+   ```
+
+6. **Start the development server**:
+   ```bash
+   uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+   ```
+
+#### Frontend Setup
+
+1. **Navigate to frontend directory** (in a new terminal):
+   ```bash
+   cd frontend
+   ```
+
+2. **Install dependencies**:
+   ```bash
    npm install
    ```
 
