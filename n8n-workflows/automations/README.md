@@ -287,7 +287,6 @@ curl -X POST http://localhost:5678/webhook/your-webhook-path \
 ### With Platform API
 
 ```javascript
-// HTTP Request node configuration
 const response = await axios.get(
   'http://localhost:8000/api/v1/projects',
   {
@@ -312,7 +311,6 @@ return [{ json: response.data }];
 ### With Slack
 
 ```javascript
-// Send workflow results to Slack
 const slackMessage = {
   text: "Weekly Report Generated",
   attachments: [
@@ -322,7 +320,6 @@ const slackMessage = {
   ]
 };
 
-// Send to Slack webhook
 ```
 
 ## Advanced Features
@@ -350,11 +347,9 @@ Define error handling workflows that trigger on failures.
 Use JavaScript/TypeScript for complex logic:
 
 ```javascript
-// Advanced data processing
 const items = $input.all();
 
 const processed = items.map(item => {
-  // Custom processing logic
   return {
     json: {
       original: item.json,
@@ -389,7 +384,6 @@ return processed;
 ### Export Workflows
 
 ```bash
-# Export all workflows
 n8n export:workflow --all --output=workflows-backup.json
 ```
 
