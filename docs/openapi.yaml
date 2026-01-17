@@ -1,0 +1,1203 @@
+openapi: 3.1.0
+info:
+  title: AI-Assisted Developer Productivity Platform API
+  description: |
+    API for managing AI-assisted development workflows, tracking AI tool usage,
+    orchestrating code agents, and integrating with CI/CD pipelines.
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@ai-dev-platform.example
+
+servers:
+  - url: http://localhost:8000/api/v1
+    description: Local development server
+  - url: https://ai-dev-platform-staging.example.com/api/v1
+    description: Staging server
+  - url: https://ai-dev-platform.example.com/api/v1
+    description: Production server
+
+tags:
+  - name: Health
+    description: Health check endpoints
+  - name: Auth
+    description: Authentication and user management
+  - name: Projects
+    description: Project management operations
+  - name: AI Activities
+    description: AI tool usage tracking
+  - name: Agents
+    description: Code agent orchestration
+  - name: Pipelines
+    description: CI/CD pipeline monitoring
+  - name: Analytics
+    description: Usage analytics and reporting
+  - name: MCP
+    description: Model-Context Protocol integration endpoints
+
+paths:
+  /health:
+    get:
+      tags: [Health]
+      summary: Check API health
+      description: Returns the health status of the API
+      operationId: checkHealth
+      responses:
+        '200':
+          description: API is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: healthy
+                  timestamp:
+                    type: string
+                    format: date-time
+                  version:
+                    type: string
+
+  /health/ready:
+    get:
+      tags: [Health]
+      summary: Readiness check
+      description: Checks if the API is ready to handle requests
+      operationId: checkReadiness
+      responses:
+        '200':
+          description: API is ready
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ready:
+                    type: boolean
+                  dependencies:
+                    type: object
+                    additionalProperties:
+                      type: string
+        '503':
+          description: API not ready
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Register new user
+      description: Create a new user account
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegister'
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/User'
+                  tokens:
+                    type: object
+                    properties:
+                      access_token:
+                        type: string
+                      refresh_token:
+                        type: string
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login user
+      description: Authenticate user and return tokens
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/User'
+                  tokens:
+                    type: object
+                    properties:
+                      access_token:
+                        type: string
+                      refresh_token:
+                        type: string
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/refresh:
+    post:
+      tags: [Auth]
+      summary: Refresh access token
+      description: Get a new access token using refresh token
+      operationId: refreshToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refresh_token]
+              properties:
+                refresh_token:
+                  type: string
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+        '401':
+          description: Invalid refresh token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /projects:
+    get:
+      tags: [Projects]
+      summary: List all projects
+      description: Retrieve a paginated list of projects
+      operationId: listProjects
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/PerPageParam'
+        - $ref: '#/components/parameters/SearchParam'
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [active, archived]
+          description: Filter by status
+      responses:
+        '200':
+          description: Projects retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Project'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      tags: [Projects]
+      summary: Create project
+      description: Create a new project
+      operationId: createProject
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectCreate'
+      responses:
+        '201':
+          description: Project created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Project'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /projects/{project_id}:
+    get:
+      tags: [Projects]
+      summary: Get project
+      description: Retrieve a specific project by ID
+      operationId: getProject
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ProjectIdParam'
+      responses:
+        '200':
+          description: Project retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Project'
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags: [Projects]
+      summary: Update project
+      description: Update a specific project
+      operationId: updateProject
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ProjectIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectUpdate'
+      responses:
+        '200':
+          description: Project updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Project'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags: [Projects]
+      summary: Delete project
+      description: Delete a specific project
+      operationId: deleteProject
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ProjectIdParam'
+      responses:
+        '204':
+          description: Project deleted successfully
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /ai-activities:
+    get:
+      tags: [AI Activities]
+      summary: List AI activities
+      description: Retrieve a paginated list of AI activities
+      operationId: listAIActivities
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/PerPageParam'
+        - in: query
+          name: project_id
+          schema:
+            type: string
+            format: uuid
+          description: Filter by project
+        - in: query
+          name: tool_used
+          schema:
+            type: string
+            enum: [chatgpt, claude, copilot, cursor]
+          description: Filter by AI tool
+        - in: query
+          name: category
+          schema:
+            type: string
+            enum: [feature, bugfix, refactor, docs, test]
+          description: Filter by category
+      responses:
+        '200':
+          description: AI activities retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AIActivity'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+
+    post:
+      tags: [AI Activities]
+      summary: Log AI activity
+      description: Record an AI tool interaction
+      operationId: logAIActivity
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AIActivityCreate'
+      responses:
+        '201':
+          description: AI activity logged successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AIActivity'
+
+  /ai-activities/{activity_id}:
+    get:
+      tags: [AI Activities]
+      summary: Get AI activity
+      description: Retrieve a specific AI activity
+      operationId: getAIActivity
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ActivityIdParam'
+      responses:
+        '200':
+          description: AI activity retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AIActivity'
+
+  /agents:
+    post:
+      tags: [Agents]
+      summary: Execute agent task
+      description: Orchestrate a code agent to perform a task
+      operationId: executeAgent
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentExecutionCreate'
+      responses:
+        '201':
+          description: Agent task initiated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AgentExecution'
+
+  /agents/{execution_id}:
+    get:
+      tags: [Agents]
+      summary: Get agent execution
+      description: Retrieve status and results of an agent execution
+      operationId: getAgentExecution
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ExecutionIdParam'
+      responses:
+        '200':
+          description: Agent execution retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AgentExecution'
+
+  /agents/types:
+    get:
+      tags: [Agents]
+      summary: List available agent types
+      description: Retrieve all available code agent types
+      operationId: listAgentTypes
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Agent types retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AgentType'
+
+  /pipelines:
+    get:
+      tags: [Pipelines]
+      summary: List pipeline executions
+      description: Retrieve CI/CD pipeline execution history
+      operationId: listPipelineExecutions
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/PerPageParam'
+        - in: query
+          name: project_id
+          schema:
+            type: string
+            format: uuid
+          description: Filter by project
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [running, success, failed]
+          description: Filter by status
+      responses:
+        '200':
+          description: Pipeline executions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PipelineExecution'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+
+    post:
+      tags: [Pipelines]
+      summary: Trigger pipeline
+      description: Trigger a CI/CD pipeline for a project
+      operationId: triggerPipeline
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PipelineTrigger'
+      responses:
+        '201':
+          description: Pipeline triggered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/PipelineExecution'
+
+  /pipelines/{execution_id}:
+    get:
+      tags: [Pipelines]
+      summary: Get pipeline execution
+      description: Retrieve details of a specific pipeline execution
+      operationId: getPipelineExecution
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ExecutionIdParam'
+      responses:
+        '200':
+          description: Pipeline execution retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/PipelineExecution'
+
+  /analytics/usage:
+    get:
+      tags: [Analytics]
+      summary: Get usage analytics
+      description: Retrieve AI tool usage statistics and analytics
+      operationId: getUsageAnalytics
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: project_id
+          schema:
+            type: string
+            format: uuid
+          description: Filter by project
+        - in: query
+          name: start_date
+          schema:
+            type: string
+            format: date
+          description: Start date for analytics period
+        - in: query
+          name: end_date
+          schema:
+            type: string
+            format: date
+          description: End date for analytics period
+      responses:
+        '200':
+          description: Usage analytics retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/UsageAnalytics'
+
+  /analytics/productivity:
+    get:
+      tags: [Analytics]
+      summary: Get productivity metrics
+      description: Retrieve developer productivity metrics
+      operationId: getProductivityMetrics
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: project_id
+          schema:
+            type: string
+            format: uuid
+          description: Filter by project
+      responses:
+        '200':
+          description: Productivity metrics retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ProductivityMetrics'
+
+  /mcp/servers:
+    get:
+      tags: [MCP]
+      summary: List MCP servers
+      description: Retrieve all configured MCP servers
+      operationId: listMCPServers
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: MCP servers retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MCPServer'
+
+    post:
+      tags: [MCP]
+      summary: Register MCP server
+      description: Register a new MCP server
+      operationId: registerMCPServer
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MCPServerCreate'
+      responses:
+        '201':
+          description: MCP server registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/MCPServer'
+
+  /mcp/servers/{server_id}/execute:
+    post:
+      tags: [MCP]
+      summary: Execute MCP tool
+      description: Execute a tool on an MCP server
+      operationId: executeMCPTool
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ServerIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [tool_name, parameters]
+              properties:
+                tool_name:
+                  type: string
+                parameters:
+                  type: object
+      responses:
+        '200':
+          description: MCP tool executed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from login or registration
+
+  parameters:
+    PageParam:
+      in: query
+      name: page
+      schema:
+        type: integer
+        default: 1
+        minimum: 1
+      description: Page number for pagination
+
+    PerPageParam:
+      in: query
+      name: per_page
+      schema:
+        type: integer
+        default: 20
+        minimum: 1
+        maximum: 100
+      description: Number of items per page
+
+    SearchParam:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: Search term for filtering results
+
+    ProjectIdParam:
+      in: path
+      name: project_id
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Project UUID
+
+    ActivityIdParam:
+      in: path
+      name: activity_id
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Activity UUID
+
+    ExecutionIdParam:
+      in: path
+      name: execution_id
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Execution UUID
+
+    ServerIdParam:
+      in: path
+      name: server_id
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Server UUID
+
+  schemas:
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [message]
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+            details:
+              type: object
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        username:
+          type: string
+        full_name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    UserRegister:
+      type: object
+      required: [email, password, username]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+          minLength: 8
+        username:
+          type: string
+          minLength: 3
+          maxLength: 50
+          pattern: '^[a-zA-Z0-9_-]+$'
+        full_name:
+          type: string
+          maxLength: 100
+
+    UserLogin:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+
+    Project:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        repository_url:
+          type: string
+          format: uri
+        tech_stack:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+          enum: [active, archived]
+        created_by:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ProjectCreate:
+      type: object
+      required: [name, repository_url]
+      properties:
+        name:
+          type: string
+          minLength: 3
+          maxLength: 100
+        description:
+          type: string
+          maxLength: 500
+        repository_url:
+          type: string
+          format: uri
+        tech_stack:
+          type: array
+          items:
+            type: string
+          maxItems: 20
+
+    ProjectUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 3
+          maxLength: 100
+        description:
+          type: string
+          maxLength: 500
+        repository_url:
+          type: string
+          format: uri
+        tech_stack:
+          type: array
+          items:
+            type: string
+          maxItems: 20
+        status:
+          type: string
+          enum: [active, archived]
+
+    AIActivity:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        project_id:
+          type: string
+          format: uuid
+        tool_used:
+          type: string
+          enum: [chatgpt, claude, copilot, cursor]
+        prompt:
+          type: string
+        response:
+          type: string
+        code_changes:
+          type: array
+          items:
+            type: string
+        timestamp:
+          type: string
+          format: date-time
+        user_id:
+          type: string
+          format: uuid
+        category:
+          type: string
+          enum: [feature, bugfix, refactor, docs, test]
+
+    AIActivityCreate:
+      type: object
+      required: [project_id, tool_used, prompt, category]
+      properties:
+        project_id:
+          type: string
+          format: uuid
+        tool_used:
+          type: string
+          enum: [chatgpt, claude, copilot, cursor]
+        prompt:
+          type: string
+        response:
+          type: string
+        code_changes:
+          type: array
+          items:
+            type: string
+        category:
+          type: string
+          enum: [feature, bugfix, refactor, docs, test]
+
+    AgentExecution:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        project_id:
+          type: string
+          format: uuid
+        agent_type:
+          type: string
+        task_description:
+          type: string
+        status:
+          type: string
+          enum: [pending, running, completed, failed]
+        input_data:
+          type: object
+        output_data:
+          type: object
+        started_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+        error_message:
+          type: string
+          nullable: true
+
+    AgentExecutionCreate:
+      type: object
+      required: [project_id, agent_type, task_description]
+      properties:
+        project_id:
+          type: string
+          format: uuid
+        agent_type:
+          type: string
+        task_description:
+          type: string
+        input_data:
+          type: object
+
+    AgentType:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        capabilities:
+          type: array
+          items:
+            type: string
+        requires_mcp_server:
+          type: boolean
+
+    PipelineExecution:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        project_id:
+          type: string
+          format: uuid
+        pipeline_name:
+          type: string
+        status:
+          type: string
+          enum: [running, success, failed]
+        commit_sha:
+          type: string
+        branch:
+          type: string
+        triggered_by:
+          type: string
+        started_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+        test_results:
+          type: object
+        deployment_url:
+          type: string
+          format: uri
+          nullable: true
+
+    PipelineTrigger:
+      type: object
+      required: [project_id, branch, commit_sha]
+      properties:
+        project_id:
+          type: string
+          format: uuid
+        branch:
+          type: string
+        commit_sha:
+          type: string
+
+    UsageAnalytics:
+      type: object
+      properties:
+        total_prompts:
+          type: integer
+        prompts_by_tool:
+          type: object
+          additionalProperties:
+            type: integer
+        prompts_by_category:
+          type: object
+          additionalProperties:
+            type: integer
+        total_cost_estimate:
+          type: number
+          format: float
+        avg_tokens_per_prompt:
+          type: number
+          format: float
+        time_saved_hours:
+          type: number
+          format: float
+
+    ProductivityMetrics:
+      type: object
+      properties:
+        total_commits:
+          type: integer
+        lines_of_code_changed:
+          type: integer
+        ai_assisted_commits:
+          type: integer
+        ai_contribution_percentage:
+          type: number
+          format: float
+        test_coverage:
+          type: number
+          format: float
+        avg_build_time_minutes:
+          type: number
+          format: float
+
+    MCPServer:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        server_type:
+          type: string
+          enum: [github, filesystem, database, http_api]
+        endpoint:
+          type: string
+          format: uri
+        status:
+          type: string
+          enum: [active, inactive, error]
+        capabilities:
+          type: array
+          items:
+            type: string
+        last_health_check:
+          type: string
+          format: date-time
+
+    MCPServerCreate:
+      type: object
+      required: [name, server_type, endpoint]
+      properties:
+        name:
+          type: string
+        server_type:
+          type: string
+          enum: [github, filesystem, database, http_api]
+        endpoint:
+          type: string
+          format: uri
+        capabilities:
+          type: array
+          items:
+            type: string
+
+    PaginationMeta:
+      type: object
+      properties:
+        page:
+          type: integer
+        per_page:
+          type: integer
+        total:
+          type: integer
+        total_pages:
+          type: integer
