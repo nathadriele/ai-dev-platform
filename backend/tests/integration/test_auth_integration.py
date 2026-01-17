@@ -20,10 +20,8 @@ class TestAuthIntegration:
 
     async def test_register_duplicate_email(self, client: AsyncClient, sample_user_data):
         """Test registration with duplicate email."""
-        # First registration
         await client.post("/api/v1/auth/register", json=sample_user_data)
 
-        # Try to register again with same email
         response = await client.post("/api/v1/auth/register", json=sample_user_data)
 
         assert response.status_code == 409
@@ -31,10 +29,8 @@ class TestAuthIntegration:
 
     async def test_login_success(self, client: AsyncClient, sample_user_data):
         """Test successful login."""
-        # Register first
         await client.post("/api/v1/auth/register", json=sample_user_data)
 
-        # Login
         response = await client.post("/api/v1/auth/login", json={
             "email": sample_user_data["email"],
             "password": sample_user_data["password"]
@@ -58,17 +54,14 @@ class TestAuthIntegration:
 
     async def test_refresh_token(self, client: AsyncClient, sample_user_data):
         """Test token refresh."""
-        # Register
         await client.post("/api/v1/auth/register", json=sample_user_data)
 
-        # Login to get tokens
         login_response = await client.post("/api/v1/auth/login", json={
             "email": sample_user_data["email"],
             "password": sample_user_data["password"]
         })
         refresh_token = login_response.json()["tokens"]["refresh_token"]
 
-        # Refresh token
         response = await client.post("/api/v1/auth/refresh", json={
             "refresh_token": refresh_token
         })
