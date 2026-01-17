@@ -402,9 +402,9 @@ Always explain "why", not just "what".
   "project_id": str,
   "task_description": str,
   "input_data": {
-    "doc_type": str,  # api/user-guide/architecture/readme
-    "source_files": List[str],  # Files to document
-    "audience": str,  # developers/users/stakeholders
+    "doc_type": str, 
+    "source_files": List[str], 
+    "audience": str, 
     "include_examples": bool,
   }
 }
@@ -415,10 +415,10 @@ Always explain "why", not just "what".
 {
   "status": "completed",
   "output_data": {
-    "documentation": str,  # Markdown content
-    "file_path": str,  # Where to save
-    "related_docs": List[str],  # Suggested related docs
-    "diagrams": List[str],  # Mermaid diagrams
+    "documentation": str,
+    "file_path": str,
+    "related_docs": List[str],
+    "diagrams": List[str], 
   }
 }
 ```
