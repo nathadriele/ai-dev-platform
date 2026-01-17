@@ -52,7 +52,6 @@ async def list_directory(params: Dict) -> Dict:
 
     try:
         for item in Path(path).iterdir():
-            # Skip hidden files if not requested
             if not include_hidden and item.name.startswith('.'):
                 continue
 
@@ -68,7 +67,6 @@ async def list_directory(params: Dict) -> Dict:
 
             files.append(file_info)
 
-            # Recursively list subdirectories
             if recursive and item.is_dir():
                 sub_files = await list_directory({
                     "path": str(item),
@@ -90,7 +88,6 @@ async def read_file(params: Dict) -> Dict:
     encoding = params.get("encoding", "utf-8")
     max_lines = params.get("max_lines", None)
 
-    # Validate path
     if not validate_path(path):
         raise ValueError(f"Access denied: {path}")
 
@@ -100,7 +97,6 @@ async def read_file(params: Dict) -> Dict:
     if not os.path.isfile(path):
         raise ValueError(f"Not a file: {path}")
 
-    # Check file size
     file_size = os.path.getsize(path)
     if file_size > MAX_FILE_SIZE:
         raise ValueError(f"File too large: {file_size} bytes")
@@ -109,7 +105,6 @@ async def read_file(params: Dict) -> Dict:
         with open(path, 'r', encoding=encoding) as f:
             content = f.read()
 
-        # Limit lines if requested
         if max_lines:
             lines = content.split('\n')[:max_lines]
             content = '\n'.join(lines)
