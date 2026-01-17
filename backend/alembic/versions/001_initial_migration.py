@@ -10,7 +10,6 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    # Create users table
     op.create_table(
         'users',
         sa.Column('id', postgresql.UUID(as_uuid=True), primary_key=True),
@@ -25,7 +24,6 @@ def upgrade() -> None:
     op.create_index('ix_users_email', 'users', ['email'], unique=True)
     op.create_index('ix_users_username', 'users', ['username'], unique=True)
 
-    # Create projects table
     op.create_table(
         'projects',
         sa.Column('id', postgresql.UUID(as_uuid=True), primary_key=True),
@@ -41,7 +39,6 @@ def upgrade() -> None:
     op.create_index('ix_projects_id', 'projects', ['id'])
     op.create_foreign_key('fk_projects_created_by', 'projects', 'users', ['created_by'], ['id'])
 
-    # Create ai_activities table
     op.create_table(
         'ai_activities',
         sa.Column('id', postgresql.UUID(as_uuid=True), primary_key=True),
@@ -60,7 +57,6 @@ def upgrade() -> None:
     op.create_foreign_key('fk_ai_activities_project', 'ai_activities', 'projects', ['project_id'], ['id'])
     op.create_foreign_key('fk_ai_activities_user', 'ai_activities', 'users', ['user_id'], ['id'])
 
-    # Create agent_executions table
     op.create_table(
         'agent_executions',
         sa.Column('id', postgresql.UUID(as_uuid=True), primary_key=True),
@@ -78,7 +74,6 @@ def upgrade() -> None:
     op.create_index('ix_agent_executions_project_id', 'agent_executions', ['project_id'])
     op.create_foreign_key('fk_agent_executions_project', 'agent_executions', 'projects', ['project_id'], ['id'])
 
-    # Create pipeline_executions table
     op.create_table(
         'pipeline_executions',
         sa.Column('id', postgresql.UUID(as_uuid=True), primary_key=True),
@@ -97,7 +92,6 @@ def upgrade() -> None:
     op.create_index('ix_pipeline_executions_project_id', 'pipeline_executions', ['project_id'])
     op.create_foreign_key('fk_pipeline_executions_project', 'pipeline_executions', 'projects', ['project_id'], ['id'])
 
-    # Create mcp_servers table
     op.create_table(
         'mcp_servers',
         sa.Column('id', postgresql.UUID(as_uuid=True), primary_key=True),
