@@ -48,7 +48,6 @@ services:
       - ai-dev-network
     restart: unless-stopped
 
-  # Optional: n8n for automation workflows
   n8n:
     image: n8nio/n8n:latest
     container_name: ai-dev-n8n

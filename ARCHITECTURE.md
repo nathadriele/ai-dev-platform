@@ -231,7 +231,7 @@ Provides workflow automation:
     "per_page": 20,
     "total": 100
   },
-  "errors": [] // optional
+  "errors": []
 }
 ```
 

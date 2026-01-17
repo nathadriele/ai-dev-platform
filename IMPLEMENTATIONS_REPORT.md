@@ -339,14 +339,11 @@ comment = await github_service.create_comment(
 ### 1. Initial Setup
 
 ```bash
-# Navigate to project
-cd /home/nathadriele/Imagens/ai-dev
+cd /home/nathadriele/ai-dev
 
-# Copy environment files
 cp backend/.env.example backend/.env
 cp frontend/.env.example frontend/.env
 
-# Edit .env files with your configuration
 nano backend/.env
 nano frontend/.env
 ```
@@ -369,10 +366,8 @@ python -c "import secrets; print(secrets.token_urlsafe(32))"
 # Run migrations
 alembic upgrade head
 
-# Seed database (optional)
 python scripts/seed.py
 
-# Start development server
 uvicorn app.main:app --reload
 ```
 
@@ -381,30 +376,24 @@ uvicorn app.main:app --reload
 ```bash
 cd frontend
 
-# Install dependencies
 npm install
 
-# Start development server
 npm run dev
 ```
 
 ### 4. Docker Setup (Recommended)
 
 ```bash
-# Development
 docker-compose -f docker-compose.dev.yml up -d
 
-# Production
 docker-compose up -d
 ```
 
 ### 5. MCP Servers (Optional)
 
 ```bash
-# Start Filesystem MCP Server
 python mcp-workflows/filesystem/mcp_server.py
 
-# Start GitHub MCP Server (in another terminal)
 python mcp-workflows/github/mcp_server.py
 
 # Start n8n (if using docker-compose)
@@ -414,11 +403,9 @@ python mcp-workflows/github/mcp_server.py
 ### 6. Run Tests
 
 ```bash
-# Backend tests
 cd backend
 pytest tests/ -v --cov=app
 
-# Frontend tests
 cd frontend
 npm test
 ```
@@ -431,11 +418,9 @@ npm test
 from app.services.github_service import GitHubService
 from app.services.ai_activity_service import AIActivityService
 
-# Get recent commits
 github = GitHubService(token="your_token")
 commits = await github.get_repo_commits("nathadriele", "ai-dev-platform")
 
-# Log AI activity for each commit
 ai_service = AIActivityService(db)
 for commit in commits:
     await ai_service.create({
@@ -450,12 +435,11 @@ for commit in commits:
 ### Example 2: Use Filesystem MCP for Code Analysis
 
 ```python
-# Analyze backend code structure
 result = await mcp_service.execute_tool(
     server_id="filesystem-local",
     tool_name="filesystem.analyze_code",
     parameters={
-        "path": "/home/nathadriele/Imagens/ai-dev/backend",
+        "path": "/home/nathadriele/ai-dev/backend",
         "language": "python"
     }
 )
@@ -492,13 +476,13 @@ When code is pushed to GitHub:
 
 ## Evaluation Criteria Coverage
 
-### Vibe Coding / AI Tools ✅
+### Vibe Coding / AI Tools 
 - Documented AI usage throughout
 - Prompts provided in `docs/AI_DOCUMENTATION.md`
 - Multiple AI tools demonstrated (Claude, ChatGPT, Cursor)
 - Examples of AI-assisted development
 
-### End-to-End Project ✅
+### End-to-End Project
 - Complete React + TypeScript frontend
 - FastAPI backend with OpenAPI spec
 - Database with migrations
@@ -506,28 +490,28 @@ When code is pushed to GitHub:
 - CI/CD pipeline functional
 - Deploy documentation
 
-### Model-Context Protocol (MCP) ✅
+### Model-Context Protocol (MCP)
 - Filesystem MCP server implemented
 - GitHub MCP server implemented
 - MCP integration documented
 - Workflow examples provided
 - Tool execution framework
 
-### AI Coding Agent ✅
+### AI Coding Agent
 - 4 specialized agents defined
 - Agent execution lifecycle
 - Agent behavior documented in `AGENTS.md`
 - Agent types endpoint
 - Integration with MCP servers
 
-### AI for Testing, CI/CD & DevOps ✅
+### AI for Testing, CI/CD & DevOps
 - Test generation with AI
 - GitHub Actions CI/CD pipeline
 - AI PR summaries workflow
 - Quality gates configured
 - Automated testing
 
-### Automation with Low-Code (n8n) ✅
+### Automation with Low-Code (n8n)
 - n8n workflow configured
 - LinkedIn post generator
 - Resume customizer
