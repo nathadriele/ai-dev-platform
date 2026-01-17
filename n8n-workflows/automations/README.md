@@ -169,15 +169,12 @@ N8N_BASIC_AUTH_USER=admin
 N8N_BASIC_AUTH_PASSWORD=your-secure-password
 WEBHOOK_URL=http://localhost:5678/
 
-# AI API Keys
 ANTHROPIC_API_KEY=sk-ant-...
 OPENAI_API_KEY=sk-...
 
-# Platform Integration
 PLATFORM_API_URL=http://localhost:8000/api/v1
 PLATFORM_API_TOKEN=your-api-token
 
-# Email (for notifications)
 SMTP_HOST=smtp.gmail.com
 SMTP_USER=your-email@gmail.com
 SMTP_PASSWORD=your-app-password
@@ -219,7 +216,6 @@ SMTP_PASSWORD=your-app-password
 ### Example: Simple AI Text Processing
 
 ```javascript
-// Function node to prepare prompt
 const prompt = `Process this text: ${$json.text}`;
 
 return [{ json: { prompt } }];
@@ -400,37 +396,11 @@ n8n export:workflow --all --output=workflows-backup.json
 ### Import Workflows
 
 ```bash
-# Import workflows
 n8n import:workflow --input=workflows-backup.json
 ```
 
 ### Database Backup
 
 ```bash
-# Backup n8n database
 docker exec n8n-db pg_dump -U n8n n8n > n8n-backup.sql
 ```
-
-## Resources
-
-- **n8n Documentation**: https://docs.n8n.io
-- **Workflow Templates**: https://n8n.io/workflows
-- **Community Forum**: https://community.n8n.io
-- **GitHub**: https://github.com/n8n-io/n8n
-
-## Contributing
-
-When adding new workflows:
-
-1. Create workflow JSON file
-2. Add documentation to this README
-3. Include usage examples
-4. Note any dependencies
-5. Test thoroughly
-
-## Support
-
-For issues or questions:
-- Check n8n documentation
-- Review execution logs
-- Open an issue in the project repository
