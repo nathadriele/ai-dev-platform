@@ -172,10 +172,10 @@ Be constructive and educational. Your goal is to improve code quality and develo
   "project_id": str,
   "task_description": str,
   "input_data": {
-    "commit_sha": str,  # GitHub commit to review
-    "file_paths": List[str],  # Specific files to review
-    "focus": List[str],  # Areas to focus on
-    "severity_threshold": str,  # Minimum severity to report
+    "commit_sha": str,  
+    "file_paths": List[str], 
+    "focus": List[str], 
+    "severity_threshold": str,
   }
 }
 ```
@@ -185,15 +185,15 @@ Be constructive and educational. Your goal is to improve code quality and develo
 {
   "status": "completed",
   "output_data": {
-    "summary": str,  # Overall assessment
+    "summary": str,  
     "issues": List[{
-      "severity": str,  # Critical/High/Medium/Low/Info
-      "category": str,  # Security/Performance/Quality/etc
+      "severity": str, 
+      "category": str,  
       "file_path": str,
       "line_number": int,
       "description": str,
       "suggestion": str,
-      "code_example": str,  # Optional fixed code
+      "code_example": str, 
     }],
     "metrics": {
       "total_issues": int,
@@ -202,7 +202,7 @@ Be constructive and educational. Your goal is to improve code quality and develo
       "medium_issues": int,
       "low_issues": int,
     },
-    "positive_notes": List[str],  # Things done well
+    "positive_notes": List[str], 
   }
 }
 ```
@@ -284,10 +284,10 @@ Include setup/teardown, fixtures, and documentation on running tests.
   "project_id": str,
   "task_description": str,
   "input_data": {
-    "file_path": str,  # File to generate tests for
-    "test_types": List[str],  # unit/integration/e2e
-    "coverage_target": float,  # Target coverage percentage
-    "framework": str,  # pytest/jest/etc
+    "file_path": str, 
+    "test_types": List[str], 
+    "coverage_target": float, 
+    "framework": str, 
   }
 }
 ```
@@ -299,7 +299,7 @@ Include setup/teardown, fixtures, and documentation on running tests.
   "output_data": {
     "test_file_path": str,
     "test_code": str,
-    "fixtures": List[str],  # Fixture definitions
+    "fixtures": List[str], 
     "setup_instructions": str,
     "coverage_estimate": float,
     "test_count": int,
@@ -707,5 +707,3 @@ Track these metrics for each agent:
 ## Conclusion
 
 Code agents are powerful tools for increasing development productivity when used appropriately. They excel at generating boilerplate, reviewing code, creating tests, and writing documentation. However, human oversight remains essential for ensuring quality, security, and alignment with project goals.
-
-For questions or issues with agents, please refer to the main documentation or open an issue in the project repository.
