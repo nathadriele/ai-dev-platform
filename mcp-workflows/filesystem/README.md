@@ -239,22 +239,3 @@ for match in result["matches"]:
 4. **Logging**: Log all file system operations for auditing
 5. **Rate Limiting**: Implement rate limiting to prevent abuse
 
-## Troubleshooting
-
-### Permission Denied
-
-**Error**: "Permission denied: /path/to/file"
-
-**Solution**: Ensure the application has read permissions for the target directory
-
-### Path Not Found
-
-**Error**: "Path does not exist: /path/to/file"
-
-**Solution**: Verify the path is correct and accessible
-
-### Large File Reading
-
-**Error**: "File too large: file.py"
-
-**Solution**: Implement chunked reading or limit file size
